@@ -3,9 +3,8 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.css";
 
-import Firebase from "./firebase/Firebase";
-
 import Register from "./components/Register";
+import Account from "./components/Account";
 
 import './App.css';
 
@@ -14,6 +13,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Route path="/register" exact component={Register}/>
+        <Route path="/myaccount" exact component={Account}/>
       </BrowserRouter>
     )
   }

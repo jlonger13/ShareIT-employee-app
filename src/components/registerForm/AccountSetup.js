@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import Profile from "../../models/Profile";
+
 export default class AccountSetup extends Component {
 
     constructor(props) {
@@ -11,11 +13,6 @@ export default class AccountSetup extends Component {
             email: "",
             password: ""
         }
-    }
-
-    nextAndUpdate(firstName, lastName, email, password) {
-        this.props.updateInfo(firstName, lastName, email, password);
-        // this.props.onNext();
     }
 
     onFirstNameChanged(e) {
@@ -42,12 +39,20 @@ export default class AccountSetup extends Component {
         })
     }
 
-
+    async createUser() {
+        try {
+            const userCredential = await this.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
+            console.log(userCredential);
+            const user = new Profile(this.state.id, this.state.firstName, this.state.lastName);
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     render() {
         return (
             <form className="row">
-                <h2>Account Setup</h2>
+                <h2>Account Information</h2>
                 <div className="col-6 mb-3">
                     <label className="form-label">First Name</label>
                     <input onChange={(e) => this.onFirstNameChanged(e)} type="text" className="form-control"/>
@@ -69,7 +74,7 @@ export default class AccountSetup extends Component {
                     <input type="password" className="form-control"/>
                 </div>
                 <div className="text-center">
-                    <button type="button" onClick={() => this.nextAndUpdate(this.state.firstName, this.state.lastName, this.state.email, this.state.password)} className="btn btn-primary sharp">Next</button>
+                    <button type="button" onClick={() => this.props.signUp()} className="btn btn-primary sharp">Submit</button>
                 </div>
             </form>
         )

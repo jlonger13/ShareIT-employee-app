@@ -1,14 +1,6 @@
 import React, { Component } from 'react'
-import { BrowserRouter, Route } from "react-router-dom";
 
-import StepProgressBar from "./registerForm/StepProgressBar";
-import AccountSetup from "./registerForm/AccountSetup";
-import PersonalInformation from "./registerForm/PersonalInformation";
-import EmergencyContact from "./registerForm/EmergencyContact";
-import Identification from "./registerForm/Identification";
-import Education from "./registerForm/Education";
-import BankInfo from "./registerForm/BankInfo";
-import Confirmation from "./registerForm/Confirmation";
+import Profile from "../models/Profile";
 
 import Firebase from "../firebase/Firebase";
 
@@ -20,148 +12,42 @@ export default class Register extends Component {
 
         this.auth = Firebase.getInstance().auth;
         this.state = {
-            step: 1,
-            gradient: "linear-gradient(to right, #87CEEB 10%, lightgray 10%)",
             firstName: "",
             lastName: "",
             email: "",
             password: "",
-            civilState: "",
-            nationality: "",
-            personalEmail: "",
-            id: "",
-            taxId: "",
-            ssn: "",
-            licenseNum: "",
-            carPlateNum: "",
-            contact1: "",
-            contact2: "",
-            courses: [],
-            bank: "",
-            iban: "",
-            swift: ""
         }
     }
 
-    nextStep() {
-        const currentStep = this.state.step;
-        const percent = currentStep*16 + 10;
-
+    onFirstNameChanged(e) {
         this.setState({
-            step: currentStep + 1,
-            gradient: "linear-gradient(to right, #87CEEB " + percent + "%, lightgray " + percent + "%)"
-        })
-        console.log(this.state);
-    }
-
-    prevStep() {
-        const currentStep = this.state.step;
-        const percent = (currentStep-2)*16 + 10;
-
-        this.setState({
-            step: currentStep - 1,
-            gradient: "linear-gradient(to right, #87CEEB " + percent + "%, lightgray " + percent + "%)"
+            firstName: e.target.value
         })
     }
 
-    getStep() {
-        switch(this.state.step) {
-            case 1:
-                return (
-                    <AccountSetup onNext={() => this.nextStep()} updateInfo={
-                        (firstName, lastName, email, password) => this.updateAccountInfo(firstName, lastName, email, password)
-                    }/>
-                );
-            case 2:
-                return (
-                    <PersonalInformation onNext={() => this.nextStep()} onPrev={() => this.prevStep()} updateInfo={
-                        (civilState, nationality, email) => this.updatePersonalInfo(civilState, nationality, email)
-                    }/>
-                );
-            case 3:
-                return (
-                    <EmergencyContact onNext={() => this.nextStep()} onPrev={() => this.prevStep()} updateInfo={
-                        (civilState, nationality, email) => this.updatePersonalInfo(civilState, nationality, email)
-                    }/>
-                );
-            case 4:
-                return (
-                    <Identification onNext={() => this.nextStep()} onPrev={() => this.prevStep()} updateInfo={
-                        (civilState, nationality, email) => this.updatePersonalInfo(civilState, nationality, email)
-                    }/>
-                );
-            case 5:
-                return (
-                    <Education onNext={() => this.nextStep()} onPrev={() => this.prevStep()} updateInfo={
-                        (civilState, nationality, email) => this.updatePersonalInfo(civilState, nationality, email)
-                    }/>
-                );
-            case 6:
-                return (
-                    <BankInfo onPrev={() => this.prevStep()} updateInfo={
-                        (civilState, nationality, email) => this.updatePersonalInfo(civilState, nationality, email)
-                    }/>
-                );
-            case 7: 
-                return (
-                    <Confirmation onPrev={() => this.prevStep()} onSubmit={() => this.createUser()}/>
-                )
-            default: 
-                break;
-        }
-    }
-
-    updateAccountInfo(firstName, lastName, email, password) {
+    onLastNameChanged(e) {
         this.setState({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
-        })
-        console.log(this.state);
-    }
-
-    updatePersonalInfo(civilState, nationality, email) {
-        this.setState({
-            civilState: civilState,
-            nationality: nationality,
-            personalEmail: email,
+            lastName: e.target.value
         })
     }
 
-    updateIdentification(id, taxId, ssn, licenseNum, carPlate) {
+    onEmailChanged(e) {
         this.setState({
-            id: id,
-            taxId: taxId,
-            ssn: ssn,
-            licenseNum: licenseNum,
-            carPlateNum: carPlate
+            email: e.target.value
         })
     }
 
-    updateEmergencyContacts(contact1, contact2) {
+    onPasswordChanged(e) {
         this.setState({
-            contact1: contact1,
-            contact2: contact2
-        })
-    }
-
-    updateEducation() {
-        this.setState({
-        })
-    }
-
-    updateBankInfo(bank, iban, swift) {
-        this.setState({
-            bank: bank,
-            iban: iban, 
-            swift: swift
+            password: e.target.value
         })
     }
 
     async createUser() {
         try {
-            this.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
+            const userCredential = await this.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
+            const user = new Profile(this.state.id, this.state.firstName, this.state.lastName);
+            user.id = userCredential.user.uid;
         } catch(err) {
             console.log(err);
         }
@@ -174,15 +60,40 @@ export default class Register extends Component {
                     <div className="card-body">
                         <div className="text-center">
                             <h1 className="unbold">Create your account</h1>
-                            <p>Fill in all fields to move to next step</p>
+                            <p>Fill in all fields to get started</p>
                         </div>
 
-                        <div className="text-center">
+                        {/* <div className="text-center">
                         <StepProgressBar step={this.state.step} gradient={this.state.gradient}/>
-                        </div>
+                        </div> */}
 
                         <div className="form-card mb-3">
-                            {this.getStep()}
+                            <form className="row">
+                                <h2>Account Information</h2>
+                                <div className="col-6 mb-3">
+                                    <label className="form-label">First Name</label>
+                                    <input onChange={(e) => this.onFirstNameChanged(e)} type="text" className="form-control"/>
+                                </div>
+                                <div className="col-6 mb-3">
+                                    <label className="form-label">Last Name</label>
+                                    <input onChange={(e) => this.onLastNameChanged(e)} type="text" className="form-control"/>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Email address</label>
+                                    <input  onChange={(e) => this.onEmailChanged(e)} type="email" className="form-control" aria-describedby="emailHelp"/>
+                                </div>
+                                <div className="mb-3">
+                                    <label  className="form-label">Password</label>
+                                    <input onChange={(e) => this.onPasswordChanged(e)} type="password" className="form-control"/>
+                                </div>
+                                <div className="mb-3">
+                                    <label  className="form-label">Confirm Password</label>
+                                    <input type="password" className="form-control"/>
+                                </div>
+                                <div className="text-center">
+                                    <button type="button" onClick={() => this.createUser()} className="btn btn-primary sharp">Submit</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
