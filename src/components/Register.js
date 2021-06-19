@@ -55,8 +55,8 @@ export default class Register extends Component {
 
     render() {
         return (
-            <div className="container my-3">
-                <div className="card">
+            <div className="background">
+                <div className="container card">
                     <div className="card-body">
                         <div className="text-center">
                             <h1 className="unbold">Create your account</h1>

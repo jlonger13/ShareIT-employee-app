@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Register from "./components/Register";
 import Account from "./components/Account";
