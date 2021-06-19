@@ -56,20 +56,16 @@ export default class Register extends Component {
     render() {
         return (
             <div className="background">
-                <div className="container card">
+                <div className="container card" style={{width: "55%", borderRadius: "15px"}}>
                     <div className="card-body">
                         <div className="text-center">
                             <h1 className="unbold">Create your account</h1>
                             <p>Fill in all fields to get started</p>
                         </div>
 
-                        {/* <div className="text-center">
-                        <StepProgressBar step={this.state.step} gradient={this.state.gradient}/>
-                        </div> */}
-
                         <div className="form-card mb-3">
                             <form className="row">
-                                <h2>Account Information</h2>
+                                <h2 className="unbold">Account Information</h2>
                                 <div className="col-6 mb-3">
                                     <label className="form-label">First Name</label>
                                     <input onChange={(e) => this.onFirstNameChanged(e)} type="text" className="form-control"/>
